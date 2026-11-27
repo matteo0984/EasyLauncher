@@ -49,6 +49,7 @@ from PySide6.QtWidgets import (
     QListView,
     QListWidget,
     QListWidgetItem,
+    QProgressBar,
     QPushButton,
     QScrollArea,
     QStackedWidget,
@@ -1291,7 +1292,7 @@ class BigScreenWindow(QWidget):
         self._detail_photo_idx: int = 0
         self._active_procs: list = []
         saved_cols = self.config.get("bigscreen_cols", 8)
-        self._grid_cols: int = int(saved_cols) if isinstance(saved_cols, int) and saved_cols >= 2 else 8
+        self._grid_cols: int = int(saved_cols) if isinstance(saved_cols, int) and saved_cols >= 3 else 8
 
         self.setWindowTitle(t("bs_title"))
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
@@ -1356,6 +1357,36 @@ class BigScreenWindow(QWidget):
             f"padding: 0px 16px; font-size: 14px; font-weight: bold; }} "
             f"QPushButton:hover {{ border-color: {self._accent}; background-color: #282f41; }}"
         )
+
+        self.zoom_pill = QFrame()
+        self.zoom_pill.setFixedHeight(42)
+        self.zoom_pill.setStyleSheet(
+            f"QFrame {{ background-color: {top_pill_bg}; "
+            f"border: 3px solid {top_pill_border}; border-radius: 12px; }}"
+        )
+        zp_lay = QHBoxLayout(self.zoom_pill)
+        zp_lay.setContentsMargins(12, 0, 12, 0)
+        zp_lay.setSpacing(8)
+        zoom_lbl = QLabel("Zoom")
+        zoom_lbl.setStyleSheet("color: #b5bfd4; font-size: 13px; font-weight: bold; border: none; background: transparent;")
+        self.zoom_bar = QProgressBar()
+        self.zoom_bar.setRange(0, 100)
+        self.zoom_bar.setValue(50)
+        self.zoom_bar.setTextVisible(False)
+        self.zoom_bar.setFixedSize(96, 10)
+        self.zoom_bar.setStyleSheet(
+            "QProgressBar { background-color: #252b3b; border: none; border-radius: 5px; } "
+            f"QProgressBar::chunk {{ background-color: {self._accent}; border-radius: 5px; }}"
+        )
+        self.zoom_val_lbl = QLabel("50%")
+        self.zoom_val_lbl.setFixedWidth(36)
+        self.zoom_val_lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.zoom_val_lbl.setStyleSheet("color: #ffffff; font-size: 13px; font-weight: bold; border: none; background: transparent;")
+        zp_lay.addWidget(zoom_lbl)
+        zp_lay.addWidget(self.zoom_bar)
+        zp_lay.addWidget(self.zoom_val_lbl)
+        self.zoom_pill.setVisible(False)
+        top.addWidget(self.zoom_pill)
 
         pad_pill = QFrame()
         pad_pill.setFixedHeight(42)
@@ -1638,6 +1669,7 @@ class BigScreenWindow(QWidget):
         self.stack.addWidget(detail_page)
 
         root.addWidget(self.stack, 1)
+        self.stack.currentChanged.connect(lambda idx: self.zoom_pill.setVisible(idx == 1))
 
         # Barra legende comandi Pad / Tastiera in basso
         self.hints_lbl = _build_hints_bar(
@@ -1951,8 +1983,9 @@ class BigScreenWindow(QWidget):
         if vw < 240:
             return
         spacing = 14
-        max_cols = max(2, (vw + spacing) // (110 + spacing))
-        cols = max(2, min(max_cols, self._grid_cols or 8))
+        min_cols = 3
+        max_cols = max(min_cols, (vw + spacing) // (110 + spacing))
+        cols = max(min_cols, min(max_cols, self._grid_cols or 8))
         avail_per_col = (vw - spacing * (cols + 1)) // cols
         cell_w = max(95, avail_per_col - 8)
         rem = max(0, vw - (spacing * (cols + 1) + (cell_w + 8) * cols))
@@ -1966,6 +1999,11 @@ class BigScreenWindow(QWidget):
             self.game_grid.doItemsLayout()
             self.game_grid.setUniformItemSizes(True)
             self.game_grid.viewport().update()
+        if hasattr(self, "zoom_bar") and hasattr(self, "zoom_val_lbl"):
+            span = max(1, max_cols - min_cols)
+            pct = round((max_cols - cols) * 100 / span)
+            self.zoom_bar.setValue(pct)
+            self.zoom_val_lbl.setText(f"{pct}%")
 
     def _zoom_grid(self, delta_cols: int) -> None:
         if not hasattr(self, "game_grid"):
@@ -1974,9 +2012,10 @@ class BigScreenWindow(QWidget):
         if vw < 240:
             return
         spacing = 14
-        max_cols = max(2, (vw + spacing) // (110 + spacing))
+        min_cols = 3
+        max_cols = max(min_cols, (vw + spacing) // (110 + spacing))
         cur = self._grid_cols if self._grid_cols is not None else 8
-        nxt = max(2, min(max_cols, cur + delta_cols))
+        nxt = max(min_cols, min(max_cols, cur + delta_cols))
         if nxt != cur:
             self._grid_cols = nxt
             self.config.data["bigscreen_cols"] = nxt
