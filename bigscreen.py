@@ -1294,6 +1294,7 @@ class BigScreenWindow(QWidget):
         self.setAttribute(Qt.WA_DeleteOnClose, True)
 
         self._build_ui()
+        self.thumb_cache.signals.loaded.connect(self._on_thumb_loaded)
         self._load_platforms()
 
         self._poller = XInputPoller(self)
@@ -2322,7 +2323,15 @@ class BigScreenWindow(QWidget):
             painter.fillRect(self.rect(), QColor(12, 15, 22, 165))
         painter.end()
 
+    def _on_thumb_loaded(self, abs_path: str, width: int, image: QImage) -> None:
+        self.thumb_cache.store(abs_path, width, image)
+        self.game_grid.viewport().update()
+
     def closeEvent(self, event) -> None:
+        try:
+            self.thumb_cache.signals.loaded.disconnect(self._on_thumb_loaded)
+        except (TypeError, RuntimeError):
+            pass
         self._poller.stop()
         self._clock_timer.stop()
         super().closeEvent(event)
