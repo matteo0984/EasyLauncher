@@ -1290,8 +1290,8 @@ class BigScreenWindow(QWidget):
         self._detail_photos: list[QPixmap] = []
         self._detail_photo_idx: int = 0
         self._active_procs: list = []
-        saved_cols = self.config.get("bigscreen_cols", None)
-        self._grid_cols: Optional[int] = int(saved_cols) if isinstance(saved_cols, int) and saved_cols >= 2 else None
+        saved_cols = self.config.get("bigscreen_cols", 8)
+        self._grid_cols: int = int(saved_cols) if isinstance(saved_cols, int) and saved_cols >= 2 else 8
 
         self.setWindowTitle(t("bs_title"))
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
@@ -1952,11 +1952,7 @@ class BigScreenWindow(QWidget):
             return
         spacing = 14
         max_cols = max(2, (vw + spacing) // (110 + spacing))
-        if self._grid_cols is None:
-            cols = max(2, round((vw + spacing) / (215 + spacing)))
-            self._grid_cols = cols
-        else:
-            cols = max(2, min(max_cols, self._grid_cols))
+        cols = max(2, min(max_cols, self._grid_cols or 8))
         avail_per_col = (vw - spacing * (cols + 1)) // cols
         cell_w = max(95, avail_per_col - 8)
         rem = max(0, vw - (spacing * (cols + 1) + (cell_w + 8) * cols))
@@ -1979,7 +1975,7 @@ class BigScreenWindow(QWidget):
             return
         spacing = 14
         max_cols = max(2, (vw + spacing) // (110 + spacing))
-        cur = self._grid_cols if self._grid_cols is not None else max(2, round((vw + spacing) / (215 + spacing)))
+        cur = self._grid_cols if self._grid_cols is not None else 8
         nxt = max(2, min(max_cols, cur + delta_cols))
         if nxt != cur:
             self._grid_cols = nxt
