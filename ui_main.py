@@ -1909,6 +1909,11 @@ class MainWindow(QMainWindow):
         self.act_version.triggered.connect(self._open_about_dialog)
         self.info_m.addAction(self.act_version)
 
+        self.act_github = QAction("GitHub", self)
+        self.act_github.setToolTip("https://github.com/matteo0984/EasyLauncher")
+        self.act_github.triggered.connect(self._open_github)
+        mb.addAction(self.act_github)
+
     def _set_ui_language(self, lang: str) -> None:
         code = set_lang(lang)
         self.config.data["ui_language"] = code
@@ -4220,6 +4225,11 @@ class MainWindow(QMainWindow):
                     QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.abspath(fp)))
                     return
         QMessageBox.information(self, t("menu_info"), "Manuale non trovato (docs/manual.html).")
+
+    def _open_github(self) -> None:
+        from PySide6.QtCore import QUrl
+        from PySide6.QtGui import QDesktopServices
+        QDesktopServices.openUrl(QUrl("https://github.com/matteo0984/EasyLauncher"))
 
     def _open_about_dialog(self) -> None:
         from PySide6.QtWidgets import QDialog
