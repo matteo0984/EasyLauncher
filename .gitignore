@@ -1,0 +1,25 @@
+# Python / Virtualenv
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build & Release artifacts
+build/
+dist/
+release/
+_dist_bak/
+*.spec.bak
+
+# Dati utente personali (ROM, database, salvataggi, media scaricati)
+data/
+roms/
+media/
+emulators/
+
+# OS / Editor
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log
