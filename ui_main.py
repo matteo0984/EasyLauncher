@@ -2445,6 +2445,7 @@ class MainWindow(QMainWindow):
         self.detail_stack.setObjectName("DetailStack")
         self.detail_stack.setAutoFillBackground(False)
         self._detail_tab_group.idClicked.connect(self.detail_stack.setCurrentIndex)
+        self.detail_stack.currentChanged.connect(self._on_detail_tab_changed)
 
         # Tab 1: Statistiche compatte + Metadati
         tab_details = QWidget()
@@ -2540,6 +2541,7 @@ class MainWindow(QMainWindow):
         desc_scroll = QScrollArea()
         desc_scroll.setWidgetResizable(True)
         desc_scroll.setFrameShape(QFrame.NoFrame)
+        desc_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         desc_scroll.setStyleSheet("QScrollArea, QScrollArea > QWidget > QWidget { background: transparent; border: none; }")
         self.d_desc = QLabel(t("no_desc"))
         self.d_desc.setObjectName("DetailDescText")
@@ -2554,6 +2556,7 @@ class MainWindow(QMainWindow):
         dl.addWidget(self.detail_stack, 1)
 
         self.scroll_area.setWidget(self.detail_inner)
+        self._on_detail_tab_changed(self.detail_stack.currentIndex())
         self.right_splitter.addWidget(self.scroll_area)
         self.right_splitter.setSizes([310, 470])
         self.right_splitter.splitterMoved.connect(self._on_right_splitter_moved)
@@ -4112,6 +4115,20 @@ class MainWindow(QMainWindow):
         win_cfg["right_splitter"] = self.right_splitter.sizes()
         self.config.save()
         self._update_preview_pixmap()
+
+    def _on_detail_tab_changed(self, idx: int) -> None:
+        for i in range(self.detail_stack.count()):
+            w = self.detail_stack.widget(i)
+            if w is not None:
+                w.setSizePolicy(
+                    QSizePolicy.Preferred,
+                    QSizePolicy.Preferred if i == idx else QSizePolicy.Ignored,
+                )
+        self.detail_stack.adjustSize()
+        if hasattr(self, "scroll_area"):
+            self.scroll_area.setVerticalScrollBarPolicy(
+                Qt.ScrollBarAlwaysOff if idx == 1 else Qt.ScrollBarAsNeeded
+            )
 
     def _apply_layout_lock(self) -> None:
         locked = bool(self.config.get("lock_layout", True))
