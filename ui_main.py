@@ -3621,7 +3621,7 @@ class MainWindow(QMainWindow):
             return
         g = self.db.get_game(self.current_game_id)
         if g and QMessageBox.question(
-            self, "Rimuovi gioco", f"Rimuovere '{g['title']}' dalla libreria?\n(Il file ROM su disco non sarà eliminato)"
+            self, t("del_game_title"), t("del_game_confirm", title=g["title"])
         ) == QMessageBox.Yes:
             self.db.delete_games([self.current_game_id])
             self.current_game_id = None
@@ -3658,7 +3658,7 @@ class MainWindow(QMainWindow):
             plat = self.db.get_platform(dlg.saved_id)
             if plat and plat["rom_dir"]:
                 if QMessageBox.question(
-                    self, "Scansiona ROM", f"Scansionare subito le ROM nella cartella di '{plat['name']}'?"
+                    self, t("scan_plat_title"), t("scan_plat_confirm", name=plat["name"])
                 ) == QMessageBox.Yes:
                     self.db.scan_platform(dlg.saved_id)
             self.reload_platforms()
@@ -3691,8 +3691,8 @@ class MainWindow(QMainWindow):
         plat = self.db.get_platform(plat_id)
         if plat and QMessageBox.question(
             self,
-            "Elimina piattaforma",
-            f"Eliminare '{plat['name']}' con tutti i suoi giochi, copertine e metadati?\n(I file ROM originali non verranno toccati)",
+            t("del_plat_title"),
+            t("del_plat_confirm", name=plat["name"]),
         ) == QMessageBox.Yes:
             self.db.delete_platform(plat_id)
             if self.current_platform_id == plat_id:

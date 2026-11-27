@@ -1619,8 +1619,8 @@ class PlatformManagerDialog(QDialog):
         plat = self.db.get_platform(pid)
         if plat and QMessageBox.question(
             self,
-            "Elimina piattaforma",
-            f"Eliminare '{plat['name']}' e tutti i suoi giochi e metadati/immagini?\n(I file ROM originali su disco non verranno toccati)",
+            t("del_plat_title"),
+            t("del_plat_confirm", name=plat["name"]),
         ) == QMessageBox.Yes:
             self.db.delete_platform(pid)
             self.changed = True
