@@ -467,7 +467,7 @@ class _BigGridDelegate(QStyledItemDelegate):
 
         icon: QIcon = index.data(Qt.DecorationRole)
         if isinstance(icon, QIcon) and not icon.isNull():
-            ic_side = max(96, int(min(art_rect.width(), art_rect.height()) * 0.62))
+            ic_side = max(48, int(min(art_rect.width(), art_rect.height()) * 0.62))
             pm = icon.pixmap(QSize(ic_side, ic_side))
             if not pm.isNull():
                 pm = pm.scaled(QSize(ic_side, ic_side), Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -487,9 +487,11 @@ class _BigGridDelegate(QStyledItemDelegate):
         painter.drawText(art_rect.adjusted(0, 6, -8, 0), Qt.AlignTop | Qt.AlignRight, "📁")
 
         title = str(index.data(Qt.DisplayRole) or "")
-        text_rect = QRect(rect.left() + 4, rect.top() + self.box_delegate.art_height + 3, rect.width() - 8, 34)
+        text_h = self.box_delegate.title_box_height
+        pt = self.box_delegate.title_font_pt
+        text_rect = QRect(rect.left() + 4, rect.top() + self.box_delegate.art_height + 3, rect.width() - 8, text_h)
         painter.setPen(QColor("#ffffff") if selected else QColor("#e6e8ee"))
-        painter.setFont(QFont("Segoe UI", 11, QFont.DemiBold if selected else QFont.Medium))
+        painter.setFont(QFont("Segoe UI", pt, QFont.DemiBold if selected else QFont.Medium))
         elided = QFontMetrics(painter.font()).elidedText(title, Qt.ElideRight, text_rect.width())
         painter.drawText(text_rect, Qt.AlignHCenter | Qt.AlignTop, elided)
 
@@ -1288,6 +1290,8 @@ class BigScreenWindow(QWidget):
         self._detail_photos: list[QPixmap] = []
         self._detail_photo_idx: int = 0
         self._active_procs: list = []
+        saved_cols = self.config.get("bigscreen_cols", None)
+        self._grid_cols: Optional[int] = int(saved_cols) if isinstance(saved_cols, int) and saved_cols >= 2 else None
 
         self.setWindowTitle(t("bs_title"))
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
@@ -1443,6 +1447,7 @@ class BigScreenWindow(QWidget):
         self.game_delegate.cell_width = 210
         self.game_delegate.accent_color = self._accent
         self.game_delegate.light_theme = False
+        self.game_delegate.scale_title = True
         self.grid_delegate = _BigGridDelegate(self.game_delegate, self._accent, self.game_grid)
         self.game_grid.setItemDelegate(self.grid_delegate)
         self.game_grid.selectionModel().currentChanged.connect(self._on_game_changed)
@@ -1642,6 +1647,7 @@ class BigScreenWindow(QWidget):
                 ("b", t("bs_hint_back_exit")),
                 ("y", t("bs_hint_search")),
                 ("x", t("bs_hint_fav")),
+                (None, "LB/RB Zoom"),
             ],
             framed=True,
             font_size=15,
@@ -1945,10 +1951,14 @@ class BigScreenWindow(QWidget):
         if vw < 240:
             return
         spacing = 14
-        target_w = 215
-        cols = max(2, round((vw + spacing) / (target_w + spacing)))
+        max_cols = max(2, (vw + spacing) // (110 + spacing))
+        if self._grid_cols is None:
+            cols = max(2, round((vw + spacing) / (215 + spacing)))
+            self._grid_cols = cols
+        else:
+            cols = max(2, min(max_cols, self._grid_cols))
         avail_per_col = (vw - spacing * (cols + 1)) // cols
-        cell_w = max(150, avail_per_col - 8)
+        cell_w = max(95, avail_per_col - 8)
         rem = max(0, vw - (spacing * (cols + 1) + (cell_w + 8) * cols))
         pad_l = rem // 2
         self.game_grid.setViewportMargins(pad_l, 0, rem - pad_l, 0)
@@ -1959,6 +1969,26 @@ class BigScreenWindow(QWidget):
             self.game_grid.setUniformItemSizes(False)
             self.game_grid.doItemsLayout()
             self.game_grid.setUniformItemSizes(True)
+            self.game_grid.viewport().update()
+
+    def _zoom_grid(self, delta_cols: int) -> None:
+        if not hasattr(self, "game_grid"):
+            return
+        vw = self.game_grid.viewport().width() - 4
+        if vw < 240:
+            return
+        spacing = 14
+        max_cols = max(2, (vw + spacing) // (110 + spacing))
+        cur = self._grid_cols if self._grid_cols is not None else max(2, round((vw + spacing) / (215 + spacing)))
+        nxt = max(2, min(max_cols, cur + delta_cols))
+        if nxt != cur:
+            self._grid_cols = nxt
+            self.config.data["bigscreen_cols"] = nxt
+            self.config.save()
+            self._fit_grid_columns()
+            idx = self.game_grid.currentIndex()
+            if idx.isValid():
+                self.game_grid.scrollTo(idx)
 
     def showEvent(self, event) -> None:
         super().showEvent(event)
@@ -2263,10 +2293,14 @@ class BigScreenWindow(QWidget):
                 # Su schermata principale (Piattaforme) serve tenere premuto B per 3s per uscire
                 pass
         elif act == "lb":
-            if cur == 2:
+            if cur == 1:
+                self._zoom_grid(1)
+            elif cur == 2:
                 self._step_detail_photo(-1)
         elif act == "rb":
-            if cur == 2:
+            if cur == 1:
+                self._zoom_grid(-1)
+            elif cur == 2:
                 self._step_detail_photo(1)
         elif act == "x":
             if cur in (1, 2):

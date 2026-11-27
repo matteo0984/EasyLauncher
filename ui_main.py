@@ -1245,6 +1245,19 @@ class BoxArtDelegate(QStyledItemDelegate):
         self.list_col_width = 280
         self.list_full_width = 600
         self.cover_radius = 6
+        self.scale_title = False
+
+    @property
+    def title_font_pt(self) -> int:
+        if not self.scale_title:
+            return 11
+        return max(9, min(18, round(11 * (self.cell_width / 215.0))))
+
+    @property
+    def title_box_height(self) -> int:
+        if not self.scale_title:
+            return 34
+        return max(34, int(self.title_font_pt * 2.8))
 
     @property
     def art_height(self) -> int:
@@ -1265,7 +1278,7 @@ class BoxArtDelegate(QStyledItemDelegate):
             if index.data(ROLE_SECTION):
                 return QSize(max(240, self.list_full_width), 30)
             return QSize(max(160, self.list_col_width), self.list_row_height)
-        return QSize(self.cell_width + 8, self.art_height + 42)
+        return QSize(self.cell_width + 8, self.art_height + self.title_box_height + 8)
 
     def _paint_list_header(self, painter: QPainter, option: QStyleOptionViewItem, letter: str) -> None:
         painter.save()
@@ -1431,9 +1444,9 @@ class BoxArtDelegate(QStyledItemDelegate):
             painter.setPen(QColor("#5b6475" if self.light_theme else "#8b92a3"))
             painter.drawText(art_rect.adjusted(8, 8, -8, -8), Qt.AlignCenter | Qt.TextWordWrap, title)
 
-        text_rect = QRect(rect.left() + 4, rect.top() + self.art_height + 3, rect.width() - 8, 34)
+        text_rect = QRect(rect.left() + 4, rect.top() + self.art_height + 3, rect.width() - 8, self.title_box_height)
         title_col = QColor("#11141a" if selected else "#1a1d24") if self.light_theme else QColor("#ffffff" if selected else "#e6e8ee")
-        title_font = QFont("Segoe UI", 11, QFont.DemiBold if selected else QFont.Medium)
+        title_font = QFont("Segoe UI", self.title_font_pt, QFont.DemiBold if selected else QFont.Medium)
         painter.setFont(title_font)
         fm = QFontMetrics(title_font)
         if fav:
