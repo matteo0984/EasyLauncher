@@ -1096,9 +1096,9 @@ class _PlatformTree(QTreeWidget):
         painter.setBrush(QColor("#d5dce8"))
         painter.setPen(Qt.NoPen)
         if self.isExpanded(index):
-            poly = QPolygon([QPoint(cx - 5, cy - 3), QPoint(cx + 5, cy - 3), QPoint(cx, cy + 4)])
+            poly = QPolygon([QPoint(cx - 7, cy - 4), QPoint(cx + 7, cy - 4), QPoint(cx, cy + 5)])
         else:
-            poly = QPolygon([QPoint(cx - 3, cy - 5), QPoint(cx + 4, cy), QPoint(cx - 3, cy + 5)])
+            poly = QPolygon([QPoint(cx - 4, cy - 7), QPoint(cx + 6, cy), QPoint(cx - 4, cy + 7)])
         painter.drawPolygon(poly)
         painter.restore()
 
@@ -2145,7 +2145,7 @@ class MainWindow(QMainWindow):
 
         self.tree = _PlatformTree()
         self.tree.setHeaderHidden(True)
-        self.tree.setIndentation(16)
+        self.tree.setIndentation(26)
         self.tree.setExpandsOnDoubleClick(True)
         self.tree.setIconSize(QSize(36, 36))
         self.tree_delegate = PlatformTreeDelegate(self.tree)
@@ -2703,16 +2703,16 @@ class MainWindow(QMainWindow):
 
     def reload_platforms(self) -> None:
         alpha_mode = (self.config.get("platform_sort_mode", "custom") == "alpha")
-        collapsed_pids: set[int] = set()
+        expanded_pids: set[int] = set()
         if self.tree.topLevelItemCount() > 0:
-            def _collect_collapsed(it: QTreeWidgetItem) -> None:
+            def _collect_expanded(it: QTreeWidgetItem) -> None:
                 pid_val = it.data(0, Qt.UserRole)
-                if pid_val is not None and it.childCount() > 0 and not it.isExpanded():
-                    collapsed_pids.add(pid_val)
+                if pid_val is not None and it.childCount() > 0 and it.isExpanded():
+                    expanded_pids.add(pid_val)
                 for i in range(it.childCount()):
-                    _collect_collapsed(it.child(i))
+                    _collect_expanded(it.child(i))
             for i in range(self.tree.topLevelItemCount()):
-                _collect_collapsed(self.tree.topLevelItem(i))
+                _collect_expanded(self.tree.topLevelItem(i))
 
         self.tree.blockSignals(True)
         self.tree.clear()
@@ -2758,7 +2758,7 @@ class MainWindow(QMainWindow):
                 if self.current_platform_id == p["id"]:
                     selected_item = child
 
-                child.setExpanded(p["id"] not in collapsed_pids)
+                child.setExpanded(p["id"] in expanded_pids)
                 build_branch(child, p["id"], raw_icon)
 
         build_branch(None, None)
