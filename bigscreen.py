@@ -1378,8 +1378,8 @@ class BigScreenWindow(QWidget):
             "QProgressBar { background-color: #252b3b; border: none; border-radius: 5px; } "
             f"QProgressBar::chunk {{ background-color: {self._accent}; border-radius: 5px; }}"
         )
-        self.zoom_val_lbl = QLabel("50%")
-        self.zoom_val_lbl.setFixedWidth(36)
+        self.zoom_val_lbl = QLabel("8")
+        self.zoom_val_lbl.setFixedWidth(28)
         self.zoom_val_lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.zoom_val_lbl.setStyleSheet("color: #ffffff; font-size: 13px; font-weight: bold; border: none; background: transparent;")
         zp_lay.addWidget(zoom_lbl)
@@ -2003,7 +2003,7 @@ class BigScreenWindow(QWidget):
             span = max(1, max_cols - min_cols)
             pct = round((max_cols - cols) * 100 / span)
             self.zoom_bar.setValue(pct)
-            self.zoom_val_lbl.setText(f"{pct}%")
+            self.zoom_val_lbl.setText(str(cols))
 
     def _zoom_grid(self, delta_cols: int) -> None:
         if not hasattr(self, "game_grid"):
