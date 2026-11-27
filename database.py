@@ -691,7 +691,7 @@ class Database:
             where.append("fi.folder_id = ?")
             params.append(int(favorite_folder_id))
         elif favorites_only:
-            where.append("g.favorite = 1")
+            where.append("(g.favorite = 1 OR EXISTS (SELECT 1 FROM favorite_items fi WHERE fi.game_id = g.id))")
         if search.strip():
             where.append("(g.title LIKE ? ESCAPE '\\' OR g.developer LIKE ? ESCAPE '\\' OR g.genre LIKE ? ESCAPE '\\')")
             like = "%" + search.strip().replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%"
@@ -1138,7 +1138,9 @@ def create_backup(
         plat_count = c.execute("SELECT COUNT(*) FROM platforms").fetchone()[0]
         game_count = c.execute("SELECT COUNT(*) FROM games").fetchone()[0]
         emu_count = c.execute("SELECT COUNT(*) FROM emulators").fetchone()[0]
-        fav_count = c.execute("SELECT COUNT(*) FROM games WHERE favorite = 1").fetchone()[0]
+        fav_count = c.execute(
+            "SELECT COUNT(*) FROM games g WHERE g.favorite = 1 OR EXISTS (SELECT 1 FROM favorite_items fi WHERE fi.game_id = g.id)"
+        ).fetchone()[0]
     finally:
         c.close()
 
