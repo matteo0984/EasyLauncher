@@ -3062,12 +3062,14 @@ class GameEditDialog(QDialog):
         self.fav_chk.setChecked(bool(g["favorite"]))
         self._loading_fields = True
         try:
-            self.box_ed.setText(self.db.resolve(g["boxart_path"]) if g["boxart_path"] else "")
+            box_resolved = self.db.resolve(g["boxart_path"]) if g["boxart_path"] else ""
+            logo_resolved = self.db.resolve(g["logo_path"]) if g["logo_path"] else ""
+            self.box_ed.setText(box_resolved)
             if hasattr(self, "logo_prev"):
                 ox = float(g["logo_offset_x"]) if ("logo_offset_x" in g.keys() and g["logo_offset_x"] is not None) else 0.5
                 oy = float(g["logo_offset_y"]) if ("logo_offset_y" in g.keys() and g["logo_offset_y"] is not None) else 0.5
                 self.logo_prev.setOffsets(ox, oy)
-            self.logo_ed.setText(self.db.resolve(g["logo_path"]) if g["logo_path"] else "")
+            self.logo_ed.setText(logo_resolved or box_resolved)
             self.shot_ed.setText(self.db.resolve(g["screenshot_path"]) if g["screenshot_path"] else "")
         finally:
             self._loading_fields = False
