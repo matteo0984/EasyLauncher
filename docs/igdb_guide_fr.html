@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guide Configuration API IGDB — EasyLauncher</title>
+  <style>
+    :root {
+      --bg: #14161c;
+      --card: #1b1e25;
+      --border: #2c313e;
+      --text: #e6e8ee;
+      --muted: #9ba2b2;
+      --accent: #f58a1f;
+      --twitch: #9146ff;
+      --ok: #3fb950;
+      --warn: #f85149;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px 18px 60px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 22px;
+    }
+    h1 { margin: 0 0 6px; font-size: 1.6rem; color: #ffffff; }
+    h2 { margin: 0 0 10px; font-size: 1.2rem; color: var(--accent); }
+    p { margin: 8px 0; }
+    a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+    }
+    .step-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #1c1000;
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .note {
+      background: rgba(245, 138, 31, 0.10);
+      border: 1px solid rgba(245, 138, 31, 0.35);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin: 12px 0;
+      font-size: 0.95rem;
+    }
+    .warn {
+      background: rgba(248, 81, 73, 0.10);
+      border: 1px solid rgba(248, 81, 73, 0.4);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin: 12px 0;
+      font-size: 0.95rem;
+    }
+    code {
+      background: #0f1116;
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+      color: #ffd199;
+    }
+    ul { margin: 8px 0 8px 20px; padding: 0; }
+    li { margin-bottom: 6px; }
+    .diagram {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0f1116;
+    }
+    .diagram svg { display: block; width: 100%; height: auto; }
+    .btn-link {
+      display: inline-block;
+      background: var(--twitch);
+      color: #ffffff;
+      padding: 7px 14px;
+      border-radius: 6px;
+      margin: 6px 6px 4px 0;
+      font-size: 0.92rem;
+    }
+    .btn-link:hover { text-decoration: none; opacity: 0.92; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Guide étape par étape : obtenir les clés API IGDB</h1>
+      <p style="color: var(--muted); margin: 0;">EasyLauncher — Frontend Rétro 100% Portable &amp; Open Source</p>
+    </header>
+    <section class="card">
+      <h2>Qu'est-ce qu'IGDB et pourquoi faut-il un compte Twitch ?</h2>
+      <p><strong>IGDB (Internet Game Database)</strong> est l'une des bases de données de jeux vidéo les plus complètes au monde. Elle est gérée par <strong>Twitch / Amazon</strong>.</p>
+      <p><strong>EasyLauncher fonctionne à 100% en local sur votre PC sans serveur intermédiaire</strong>. Pour interroger IGDB, vous avez besoin d'un <code>Client ID</code> et d'un <code>Client Secret</code> gratuits via votre compte Twitch Developer.</p>
+      <div class="note"><strong>Durée des clés :</strong> Le <code>Client ID</code> et le <code>Client Secret</code> <strong>n'expirent jamais</strong>. EasyLauncher renouvelle automatiquement le jeton d'accès temporaire.</div>
+    </section>
+    <section class="card">
+      <span class="step-badge">ÉTAPE 1</span>
+      <h2>Connectez-vous à Twitch et activez l'A2F (2FA)</h2>
+      <p>Twitch exige l'<strong>authentification à deux facteurs (2FA)</strong> pour enregistrer une application. Sans 2FA, l'erreur suivante apparaît : <em>"user must have two factor auth enabled to perform this action"</em>.</p>
+      <ul><li>Si vous n'avez pas de compte Twitch, créez-en un gratuitement sur <a href="https://www.twitch.tv/" target="_blank">https://www.twitch.tv/</a>.</li><li>Ouvrez les paramètres de sécurité et activez la 2FA :</li></ul>
+      <a class="btn-link" href="https://www.twitch.tv/settings/security" target="_blank">Ouvrir Sécurité Twitch (Activer 2FA)</a>
+    </section>
+    <section class="card">
+      <span class="step-badge">ÉTAPE 2</span>
+      <h2>Ouvrir la Console Développeur Twitch</h2>
+      <p>Une fois la 2FA activée, ouvrez la console Twitch et cliquez sur <strong>Enregistrer votre application</strong> :</p>
+      <a class="btn-link" href="https://dev.twitch.tv/console" target="_blank">Console Développeur Twitch</a>
+      <a class="btn-link" href="https://dev.twitch.tv/console/apps/create" target="_blank">Enregistrer une application</a>
+    </section>
+    <section class="card">
+      <span class="step-badge">ÉTAPE 3</span>
+      <h2>Remplir le formulaire « Enregistrer votre application »</h2>
+      <ul><li><strong>Nom :</strong> choisissez un nom unique (3–100 caractères, ex. <code>EasyLauncher</code>).</li><li><strong>URL de redirection OAuth :</strong> saisissez exactement <code>https://localhost</code>.</li><li><strong>Catégorie :</strong> sélectionnez <code>Application Integration</code>.</li><li><strong>Type de client :</strong> sélectionnez <strong>Confidentiel</strong> (pour obtenir le <code>Client Secret</code>).</li><li>Cliquez sur <strong>Créer</strong> en bas.</li></ul>
+      <div class="warn"><strong>Attention aux erreurs courantes :</strong><br>1) Utilisez bien <code>https://localhost</code> (avec <strong>HTTPS</strong>).<br>2) Ne laissez pas un deuxième champ d'URL vide.</div>
+    </section>
+    <section class="card">
+      <span class="step-badge">ÉTAPE 4</span>
+      <h2>Copier « ID client » et générer le « Secret client »</h2>
+      <ul><li>Retournez sur <a href="https://dev.twitch.tv/console/apps" target="_blank">Vos Applications</a> et cliquez sur <strong>Gérer</strong>.</li><li>Copiez l'<strong>ID client</strong>.</li><li>Cliquez sur <strong>Nouveau secret</strong> et copiez immédiatement le <strong>Secret client</strong>.</li></ul>
+    </section>
+    <section class="card">
+      <span class="step-badge">ÉTAPE 5</span>
+      <h2>Saisir les clés dans EasyLauncher</h2>
+      <ul><li>Ouvrez <strong>EasyLauncher → Outils → Télécharger les Métadonnées → Paramètres Métadonnées</strong>.</li><li>Dans la section <strong>IGDB (Twitch Developer)</strong>, collez <strong>Client ID</strong> et <strong>Client Secret</strong>.</li><li>Cliquez sur <strong>Enregistrer les Paramètres</strong> (sauvegardé localement dans <code>data/config.json</code>).</li></ul>
+      <p style="color: var(--muted); font-size: 0.9rem;">Documentation officielle IGDB : <a href="https://api-docs.igdb.com/#account-creation" target="_blank">https://api-docs.igdb.com/#account-creation</a></p>
+    </section>
+  </div>
+</body>
+</html>

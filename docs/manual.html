@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyLauncher — Manuale Completo d'Uso</title>
+  <style>
+    :root {
+      --bg: #0f1219;
+      --panel: #171b26;
+      --panel-2: #1d2230;
+      --border: #2a3144;
+      --text: #e6ebf5;
+      --muted: #98a4bc;
+      --accent: #f58a1f;
+      --accent-soft: rgba(245, 138, 31, 0.14);
+      --green: #3fb950;
+      --blue: #58a6ff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      display: flex;
+      min-height: 100vh;
+    }
+    /* Sidebar */
+    aside.toc {
+      width: 285px;
+      flex-shrink: 0;
+      background: #121620;
+      border-right: 1px solid var(--border);
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand img { width: 42px; height: 42px; border-radius: 9px; }
+    .brand h1 { font-size: 18px; margin: 0; color: #fff; }
+    .brand span { font-size: 12px; color: var(--accent); font-weight: 700; }
+    .toc h2 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin: 18px 0 8px;
+    }
+    .toc a {
+      display: block;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13.5px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 2px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .toc a:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    /* Main Content */
+    main {
+      flex: 1;
+      max-width: 1040px;
+      padding: 36px 46px 80px;
+      margin: 0 auto;
+    }
+    .hero {
+      background: linear-gradient(135deg, #1b2130 0%, #141824 100%);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--accent);
+      border-radius: 14px;
+      padding: 26px 30px;
+      margin-bottom: 34px;
+    }
+    .hero h2 { margin: 0 0 8px; font-size: 28px; color: #fff; }
+    .hero p { margin: 0; color: var(--muted); font-size: 15.5px; }
+    section { margin-bottom: 48px; }
+    h2.sec-title {
+      font-size: 23px;
+      color: #fff;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+      margin: 0 0 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h2.sec-title .num {
+      background: var(--accent);
+      color: #10131a;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+    h3 {
+      font-size: 17px;
+      color: #fff;
+      margin: 22px 0 8px;
+    }
+    p, li { font-size: 14.8px; color: #d6deeb; }
+    ul, ol { padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .step-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .step-card .badge {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(245, 138, 31, 0.4);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .step-card h4 { margin: 0 0 6px; font-size: 16px; color: #fff; }
+    .step-card p { margin: 0; font-size: 13.8px; color: var(--muted); }
+    .callout {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 13px 16px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .callout.tip { border-left-color: var(--green); }
+    .callout.info { border-left-color: var(--blue); }
+    .shot {
+      margin: 18px 0 24px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+    .shot img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid #2b3347;
+      display: block;
+      margin: 0 auto;
+    }
+    .shot figcaption {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    kbd {
+      display: inline-block;
+      background: #252c3d;
+      color: #fff;
+      border: 1px solid #3c4660;
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      padding: 1px 7px;
+      font-family: "Consolas", monospace;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    code {
+      background: #222838;
+      color: #ffb86c;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "Consolas", monospace;
+      font-size: 13px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    th { background: #1d2333; color: #fff; font-weight: 700; }
+    tr:last-child td { border-bottom: none; }
+    @media (max-width: 900px) {
+      body { flex-direction: column; }
+      aside.toc { width: 100%; height: auto; position: static; }
+      main { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="toc">
+    <div class="brand">
+      <img src="../icons/app_icon.png" alt="EasyLauncher" />
+      <div>
+        <h1>EasyLauncher</h1>
+        <span>Manuale Completo · v1.0</span>
+      </div>
+    </div>
+    <h2>Per Iniziare</h2>
+    <a href="#primi-passi">1. Primi Passi (Guida Rapida)</a>
+    <a href="#interfaccia">2. L'Interfaccia a 3 Colonne</a>
+    <h2>Gestione Libreria</h2>
+    <a href="#piattaforme-emulatori">3. Piattaforme ed Emulatori</a>
+    <a href="#giochi-rom">4. Aggiungere e Gestire Giochi</a>
+    <a href="#scraping">5. Metadati, Copertine &amp; Foto Extra</a>
+    <h2>Personalizzazione &amp; Pad</h2>
+    <a href="#aspetto">6. Aspetto, Angoli e Layout</a>
+    <a href="#schermo-intero">7. Modalità Schermo Intero (Pad)</a>
+    <h2>Manutenzione</h2>
+    <a href="#backup-portable">8. Backup, Ripristino &amp; Portable</a>
+    <a href="#scorciatoie-faq">9. Scorciatoie &amp; FAQ</a>
+  </aside>
+
+  <main>
+    <div class="hero">
+      <h2>Benvenuto in EasyLauncher</h2>
+      <p>
+        Questa guida ti accompagna passo dopo passo dall'installazione zero fino a tutte le funzioni avanzate:
+        configurazione di console ed emulatori, download automatico di copertine e screenshot extra,
+        personalizzazione grafica completa e navigazione da divano con controller Xbox/XInput.
+      </p>
+    </div>
+
+    <!-- 1. PRIMI PASSI -->
+    <section id="primi-passi">
+      <h2 class="sec-title"><span class="num">1</span> Primi Passi — Come Iniziare Subito</h2>
+      <p>
+        Se usi <strong>EasyLauncher</strong> per la prima volta, segui questi <strong>5 passaggi fondamentali</strong>
+        nell'ordine indicato per avere subito la tua libreria pronta e giocabile:
+      </p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="badge">PASSO 1</span>
+          <h4>Crea una Piattaforma</h4>
+          <p>
+            Vai su <strong>File → Nuova Piattaforma…</strong> (oppure <strong>Strumenti → Gestisci Piattaforme…</strong>).
+            Scegli il nome della console (es. <em>Game Boy</em>, <em>Nintendo 64</em>) e la cartella dove tieni le ROM:
+            le estensioni dei file e l'icona vengono impostate <strong>in automatico</strong> (puoi comunque personalizzarle in seguito dalle opzioni avanzate).
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="badge">PASSO 2</span>
+          <h4>Collega un Emulatore</h4>
+          <p>
+            Apri <strong>Strumenti → Gestisci Emulatori…</strong>, clicca <strong>Aggiungi</strong>, seleziona
+            l'eseguibile del tuo emulatore (es. <code>retroarch.exe</code>, <code>dolphin.exe</code>) e associalo alla piattaforma creata.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="badge">PASSO 3</span>
+          <h4>Scansiona le tue ROM</h4>
+          <p>
+            Clicca <strong>File → Scansiona tutte le cartelle ROM</strong> (oppure trascina direttamente i file ROM
+            dentro la griglia centrale). I giochi compariranno subito nella libreria!
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="badge">PASSO 4</span>
+          <h4>Scarica Copertine &amp; Info</h4>
+          <p>
+            Apri <strong>Strumenti → Scarica Metadati e Copertine…</strong>, seleziona la piattaforma e premi
+            <strong>Avvia</strong>. Anche senza chiavi API, il programma scarica automaticamente copertine, descrizioni e screenshot.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="badge">PASSO 5</span>
+          <h4>Avvia un Gioco!</h4>
+          <p>
+            Fai <strong>doppio click</strong> su una copertina (o su una riga nella vista lista), premi <kbd>Invio</kbd>
+            oppure clicca il grande pulsante arancione <strong>▶ AVVIA GIOCO</strong> a destra.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <strong>Consiglio per chi inizia:</strong> EasyLauncher è <strong>100% portable</strong>. Tutti i tuoi giochi,
+        salvataggi del database, copertine ed emulatori possono stare dentro la stessa cartella del programma: puoi
+        spostarla su una chiavetta USB o un altro PC senza perdere nulla.
+      </div>
+    </section>
+
+    <!-- 2. INTERFACCIA -->
+    <section id="interfaccia">
+      <h2 class="sec-title"><span class="num">2</span> L'Interfaccia Principale a 3 Colonne</h2>
+      <p>
+        La finestra principale è divisa in tre colonne ridimensionabili e personalizzabili, più una barra superiore unificata.
+      </p>
+
+      <figure class="shot">
+        <img src="guide_images/guide_main_grid.png" alt="Interfaccia principale vista copertine" />
+        <figcaption>Vista principale in modalità <strong>⊞ Copertine</strong> con le 3 colonne: Piattaforme (SX), Griglia giochi (Centro) e Dettagli + Media (DX).</figcaption>
+      </figure>
+
+      <h3>Barra Superiore</h3>
+      <ul>
+        <li><strong>Menu File · Strumenti · Interfaccia · Info:</strong> accesso rapido a tutte le funzioni del programma.</li>
+        <li><strong>Cerca nella sezione selezionata:</strong> filtra istantaneamente i giochi per titolo mentre scrivi.</li>
+        <li><strong>Ordina:</strong> ordina per <em>Titolo</em>, <em>Anno</em>, <em>Sviluppatore</em>, <em>Recenti</em> o <em>Valutazione</em>.</li>
+        <li><strong>Zoom:</strong> ingrandisce o riduce le copertine (sia nella vista <em>Copertine</em> che nelle righe della vista <em>Lista</em>, memorizzando due valori separati!).</li>
+        <li><strong>☰ Lista / ⊞ Copertine:</strong> passa tra la vista a copertine e la vista a lista a 3 colonne.</li>
+        <li><strong>Icona Controller (Pad):</strong> avvia subito la <em>Modalità Schermo Intero</em> (<kbd>F11</kbd>).</li>
+      </ul>
+
+      <h3>Vista ☰ Lista a 3 Colonne e Barra Alfabetica</h3>
+      <p>
+        Selezionando <strong>☰ Lista</strong>, i giochi vengono mostrati in <strong>3 colonne</strong> suddivise per lettera
+        iniziale (<code>#</code>, <code>A</code>, <code>B</code>, …). In alto compare una barra alfabetica: cliccando qualsiasi
+        lettera attiva salti subito alla sezione corrispondente.
+      </p>
+
+      <figure class="shot">
+        <img src="guide_images/guide_main_list.png" alt="Vista lista a 3 colonne con barra alfabetica" />
+        <figcaption>Modalità <strong>☰ Lista</strong>: 3 colonne divise per lettera con barra alfabetica rapida in alto e zoom indipendente per le miniature.</figcaption>
+      </figure>
+
+      <h3>Colonna Sinistra: Piattaforme, Sotto-cartelle e Preferiti ★</h3>
+      <ul>
+        <li><strong>Scheda Piattaforme:</strong> contiene <em>Tutte le Piattaforme</em>, le tue console principali e le eventuali sotto-cartelle personalizzate (es. collezioni <em>Pokémon</em> o <em>Super Mario</em>).</li>
+        <li><strong>Ordine Alfabetico vs Ordine personalizzato:</strong> i due pulsanti in fondo permettono di alternare tra ordine alfabetico automatico e ordine manuale. In <em>Ordine personalizzato</em> puoi trascinare le cartelle per riordinarle a piacimento; l'ordine manuale resta sempre salvato anche se passi temporaneamente all'ordine alfabetico.</li>
+        <li><strong>Scheda Preferiti ★:</strong> crea cartelle preferiti personalizzate (es. <em>Da finire</em>, <em>Multiplayer</em>) e organizzaci i giochi tramite tasto destro.</li>
+      </ul>
+
+      <h3>Colonna Destra: Media, Dettagli e Statistiche</h3>
+      <ul>
+        <li><strong>In alto:</strong> Logo/Banner del gioco e Screenshot gameplay. Se un gioco ha più screenshot, compaiono le frecce <code>◀</code> / <code>▶</code> per sfogliarli e il tasto <code>+</code> in basso a destra per aggiungerne o gestirne altri.</li>
+        <li><strong>Pulsanti rapidi:</strong> <strong>▶ AVVIA GIOCO</strong>, <strong>☆ Preferito</strong>, <strong>✎ Modifica / Metadati</strong> e l'icona cartella per aprire la directory della ROM.</li>
+        <li><strong>Schede Dettagli / Descrizione:</strong> mostra partite giocate, tempo totale di gioco, metadati completi e trama (con pulsante per tradurre automaticamente la descrizione nella lingua dell'interfaccia).</li>
+      </ul>
+    </section>
+
+    <!-- 3. PIATTAFORME ED EMULATORI -->
+    <section id="piattaforme-emulatori">
+      <h2 class="sec-title"><span class="num">3</span> Gestione Piattaforme ed Emulatori</h2>
+      <p>
+        Dal menu <strong>Strumenti → Gestisci Piattaforme…</strong> puoi creare, modificare, eliminare o aggiungere sotto-cartelle
+        a qualsiasi console. Quando scegli una piattaforma predefinita, estensioni ROM e icona vengono compilate automaticamente
+        (puoi comunque modificarle se necessario come opzione avanzata).
+      </p>
+
+      <figure class="shot">
+        <img src="guide_images/guide_platforms.png" alt="Gestione Piattaforme" />
+        <figcaption>Finestra di gestione Piattaforme: puoi configurare cartella ROM, estensioni, icona, logo e sotto-sezioni.</figcaption>
+      </figure>
+
+      <h3>Configurare gli Emulatori</h3>
+      <p>
+        In <strong>Strumenti → Gestisci Emulatori…</strong> puoi aggiungere quanti emulatori desideri e impostare i parametri da riga di comando.
+      </p>
+      <figure class="shot">
+        <img src="guide_images/guide_emulators.png" alt="Gestione Emulatori" />
+        <figcaption>Gestione Emulatori: associa l'eseguibile alla piattaforma e personalizza i parametri di avvio.</figcaption>
+      </figure>
+
+      <table>
+        <thead>
+          <tr><th>Segnaposto</th><th>Significato</th><th>Esempio d'uso (RetroArch / Standalone)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>{rom}</code></td><td>Percorso completo del file ROM selezionato</td><td><code>-L cores\gambatte_libretro.dll "{rom}"</code></td></tr>
+          <tr><td><code>{rom_dir}</code></td><td>Cartella che contiene la ROM</td><td>Utile per giochi PC/DOS o configurazioni per cartella</td></tr>
+          <tr><td><code>{rom_name}</code></td><td>Nome del file ROM senza estensione</td><td>Utile per lanciare giochi tramite ID/nome</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <strong>Più emulatori per la stessa console:</strong> se associ più emulatori a una piattaforma, facendo
+        <strong>tasto destro su un gioco → Avvia con</strong> puoi scegliere al volo quale emulatore usare.
+      </div>
+    </section>
+
+    <!-- 4. GIOCHI E ROM -->
+    <section id="giochi-rom">
+      <h2 class="sec-title"><span class="num">4</span> Aggiungere, Modificare e Organizzare i Giochi</h2>
+      <ul>
+        <li><strong>Scansione automatica:</strong> <strong>File → Scansiona tutte le cartelle ROM</strong> controlla tutte le cartelle associate e importa automaticamente i nuovi titoli trovati.</li>
+        <li><strong>Drag &amp; Drop:</strong> puoi trascinare uno o più file ROM direttamente da Esplora Risorse sulla griglia centrale (selezionando prima la piattaforma di destinazione).</li>
+        <li><strong>Aggiunta manuale:</strong> <strong>File → Aggiungi ROM manualmente…</strong> per aggiungere singoli file fuori dalle cartelle standard.</li>
+        <li><strong>Menu contestuale (Tasto Destro sul gioco):</strong> Avvia, Avvia con…, Modifica / Metadati (titolo, anno, genere, copertina, logo, screenshot extra), Sposta in sotto-cartella, Aggiungi/Rimuovi dai Preferiti, Apri cartella ROM, Rimuovi gioco dalla libreria.</li>
+      </ul>
+    </section>
+
+    <!-- 5. SCRAPING E METADATI -->
+    <section id="scraping">
+      <h2 class="sec-title"><span class="num">5</span> Scaricare Metadati, Copertine e Foto Extra</h2>
+      <p>
+        EasyLauncher integra un motore multi-fonte accessibile da <strong>Strumenti → Scarica Metadati e Copertine…</strong>.
+      </p>
+
+      <figure class="shot">
+        <img src="guide_images/guide_scrape_dl.png" alt="Finestra Scarica Metadati" />
+        <figcaption>Scheda <strong>Scarica Metadati</strong>: scegli piattaforma, modalità (solo mancanti o sovrascrivi) e monitora il progresso.</figcaption>
+      </figure>
+
+      <h3>Impostazioni Metadati &amp; Screenshot Extra (per singola Piattaforma)</h3>
+      <p>
+        Nella seconda scheda <strong>Impostazioni Metadati</strong> puoi personalizzare tutto con precisione chirurgica:
+      </p>
+      <figure class="shot">
+        <img src="guide_images/guide_scrape_settings.png" alt="Impostazioni Metadati" />
+        <figcaption>Matrice Fonti per Campo: seleziona la piattaforma in alto, ordina le fonti per ogni campo e scegli quanti screenshot extra scaricare.</figcaption>
+      </figure>
+
+      <ul>
+        <li><strong>Fonti gratuite senza API Key:</strong> <em>Libretro Thumbnails</em>, <em>LaunchBox GamesDB</em>, <em>ArcadeDB</em>, <em>Steam</em>, <em>GOG</em>, <em>Wikipedia</em>, <em>Wikidata</em>, <em>Nintendo</em>.</li>
+        <li><strong>Fonti avanzate con API Key (opzionali):</strong> <em>IGDB (Twitch)</em>, <em>ScreenScraper</em>, <em>TheGamesDB</em>, <em>SteamGridDB</em>. Nella stessa scheda trovi il pulsante <strong>📖 Guida</strong> con le istruzioni passo-passo per ottenere le chiavi IGDB gratuite.</li>
+        <li><strong>Foto Gameplay Extra (0–3):</strong> accanto alla riga <strong>Screenshot</strong> puoi scegliere <code>Extra: 0</code>, <code>+1</code>, <code>+2</code> o <code>+3</code>. Questa scelta è <strong>indipendente per ogni piattaforma</strong>. Durante la scansione il programma scarica la foto principale più fino a 3 foto extra controllando che siano <strong>tutte diverse tra loro</strong> (verifica sia URL che impronta SHA-256 del file).</li>
+      </ul>
+    </section>
+
+    <!-- 6. ASPETTO E LAYOUT -->
+    <section id="aspetto">
+      <h2 class="sec-title"><span class="num">6</span> Personalizzazione: Aspetto, Angoli e Finestre</h2>
+      <p>Dal menu <strong>Interfaccia</strong> puoi trasformare completamente l'aspetto del programma:</p>
+
+      <figure class="shot">
+        <img src="guide_images/guide_appearance.png" alt="Aspetto Interfaccia" />
+        <figcaption><strong>Interfaccia → Aspetto…</strong>: temi, profili salvabili, colori personalizzati e sfondi sfocati dinamici.</figcaption>
+      </figure>
+
+      <ul>
+        <li><strong>Aspetto…:</strong> scegli tra <em>Tema Scuro</em> e <em>Tema Bianco (Chiaro)</em>, cambia il <em>Colore selezione</em> (es. arancione, verde, blu), attiva lo <em>Sfondo sfocato dinamico</em> (che adatta lo sfondo alla copertina del gioco selezionato) oppure imposta sfondi personalizzati per ciascuna delle 3 colonne e salva i tuoi <strong>Profili</strong>.</li>
+        <li><strong>Angoli arrotondati copertine e immagini…:</strong> regola separatamente con 3 slider allineati l'arrotondamento (<code>0–28 px</code>) per <em>Copertine giochi</em>, <em>Logo / Banner</em> e <em>Screenshot</em>, con anteprima dal vivo e pulsante <strong>Ripristina Default (6)</strong>.</li>
+        <li><strong>Dimensione Finestre…:</strong> sblocca i divisori tra le colonne per ridimensionarle trascinando i bordi, poi ribloccale oppure premi <strong>Ripristina default</strong> per tornare alle proporzioni originali (ribloccando automaticamente i pannelli).</li>
+        <li><strong>Seleziona Lingua:</strong> cambia l'intera interfaccia (e i nuovi metadati) in <em>Italiano</em>, <em>English</em>, <em>Français</em>, <em>Español</em> o <em>Deutsch</em>. Al primo avvio il programma parte in <em>English</em>; la lingua scelta viene poi salvata per gli avvii successivi.</li>
+      </ul>
+    </section>
+
+    <!-- 7. MODALITA SCHERMO INTERO -->
+    <section id="schermo-intero">
+      <h2 class="sec-title"><span class="num">7</span> Modalità Schermo Intero (Controller / Pad)</h2>
+      <p>
+        Pensata per TV, cabinati o per giocare dal divano con un controller Xbox/XInput o con la tastiera.
+        Puoi avviarla premendo <kbd>F11</kbd>, cliccando l'icona del gamepad bianco in alto a destra, oppure da
+        <strong>File → Modalità Schermo Intero (Pad)</strong> (dove puoi anche spuntare <em>Avvia in Modalità Schermo Intero</em>).
+      </p>
+
+      <figure class="shot">
+        <img src="guide_images/guide_bigscreen.png" alt="Modalità Schermo Intero" />
+        <figcaption>Modalità Schermo Intero / Pad: navigazione a tutto schermo con supporto nativo XInput e tastiera virtuale.</figcaption>
+      </figure>
+
+      <table>
+        <thead>
+          <tr><th>Tasto Pad (Xbox/XInput)</th><th>Tastiera</th><th>Azione</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><kbd>D-Pad</kbd> / <kbd>Stick SX</kbd></td><td><kbd>Frecce</kbd></td><td>Sposta la selezione tra piattaforme, giochi e dettagli</td></tr>
+          <tr><td><kbd>A</kbd></td><td><kbd>Invio</kbd></td><td>Entra nella piattaforma / Apri dettagli / Avvia gioco</td></tr>
+          <tr><td><kbd>B</kbd></td><td><kbd>Esc</kbd></td><td>Torna indietro (tieni premuto 3s per uscire dalla modalità)</td></tr>
+          <tr><td><kbd>Y</kbd></td><td>Click su <em>🔍 Cerca</em></td><td>All'interno di una piattaforma, apre la ricerca con tastiera virtuale navigabile da Pad</td></tr>
+          <tr><td><kbd>X</kbd></td><td>—</td><td>Aggiunge/rimuove dai Preferiti (con gestione cartelle da Pad)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 8. BACKUP E PORTABLE -->
+    <section id="backup-portable">
+      <h2 class="sec-title"><span class="num">8</span> Backup, Ripristino &amp; Struttura Portable</h2>
+      <p>
+        In <strong>Strumenti → Backup e Ripristino…</strong> puoi creare un archivio completo delle tue configurazioni,
+        del database e dei media (o ripristinarne uno precedente) in qualsiasi momento.
+      </p>
+      <ul>
+        <li><code>data/library.db</code> — database SQLite con piattaforme, emulatori, giochi, statistiche e preferiti.</li>
+        <li><code>data/config.json</code> — tutte le impostazioni di interfaccia, profili aspetto, zoom, angoli e fonti metadati.</li>
+        <li><code>media/</code> — copertine, loghi e screenshot scaricati (inclusi gli extra).</li>
+        <li><code>roms/</code> &amp; <code>emulators/</code> — cartelle consigliate per mantenere il setup 100% portable.</li>
+      </ul>
+    </section>
+
+    <!-- 9. SCORCIATOIE & FAQ -->
+    <section id="scorciatoie-faq">
+      <h2 class="sec-title"><span class="num">9</span> Scorciatoie da Tastiera &amp; Domande Frequenti</h2>
+      <table>
+        <thead>
+          <tr><th>Scorciatoia</th><th>Funzione</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><kbd>F11</kbd></td><td>Entra nella Modalità Schermo Intero (Pad)</td></tr>
+          <tr><td><kbd>Invio</kbd> / <kbd>Doppio Click</kbd></td><td>Avvia il gioco selezionato</td></tr>
+          <tr><td><kbd>Tasto Destro</kbd> su gioco / piattaforma</td><td>Menu rapido (modifica, sposta, preferiti, apri cartella)</td></tr>
+          <tr><td><kbd>Esc</kbd> (tieni 3s)</td><td>Esce dalla Modalità Schermo Intero e torna alla finestra normale</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Domande Frequenti</h3>
+      <ul>
+        <li><strong>La scansione non scarica gli screenshot extra?</strong> Verifica nelle <em>Impostazioni Metadati</em> di aver selezionato la piattaforma corretta in alto e impostato <code>Extra: +1/+2/+3</code>, poi premi <strong>Salva Impostazioni</strong> prima di avviare la scansione.</li>
+        <li><strong>Un gioco non parte?</strong> Controlla in <em>Strumenti → Gestisci Emulatori…</em> che l'eseguibile sia associato alla piattaforma e che i parametri contengano <code>{rom}</code> (tra virgolette se il percorso ha spazi: <code>"{rom}"</code>).</li>
+        <li><strong>Voglio spostare EasyLauncher su un altro PC:</strong> copia semplicemente l'intera cartella principale di EasyLauncher; tutti i percorsi relativi vengono risolti automaticamente.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
