@@ -3815,6 +3815,7 @@ class MainWindow(QMainWindow):
         dyn_r = bool(self.config.get("bg_dynamic_right", True))
         if not (dyn_l or dyn_c or dyn_r):
             return
+        had_dyn = self._dynamic_bg_pixmap is not None
         radius = int(self.config.get("bg_dynamic_blur_radius", 36) or 36)
         if recompute_blur and self._dynamic_bg_path and (
             self._dynamic_bg_pixmap is None or self._dynamic_bg_radius != radius
@@ -3834,6 +3835,11 @@ class MainWindow(QMainWindow):
 
         dyn_pm = self._dynamic_bg_pixmap
         if dyn_pm is None:
+            if had_dyn:
+                self._apply_appearance()
+            return
+        if not had_dyn:
+            self._apply_appearance()
             return
         dyn_int = max(10, min(80, int(self.config.get("bg_dynamic_blur_intensity", 50) or 50)))
         dyn_scrim = int(round(235 - dyn_int * 2.0))
@@ -3986,7 +3992,7 @@ class MainWindow(QMainWindow):
                 tab_press = f"background-color: rgba({ac.red()}, {ac.green()}, {ac.blue()}, 75); border: 1.5px solid {acc}; color: #ffffff; padding-top: 7px; padding-bottom: 5px;"
                 tab_sel = f"background-color: rgba(28, 33, 46, 210); border: 1.5px solid {acc}; color: #ffffff;"
             left_tab_css = (
-                "QWidget#LeftFavPage, QStackedWidget#LeftStack { background: transparent; border: none; } "
+                "QWidget#LeftPlatPage, QWidget#LeftFavPage, QStackedWidget#LeftStack { background: transparent; border: none; } "
                 f"QPushButton#LeftTabBtn {{ {tab_unsel} border-radius: 14px; font-size: 12.5px; font-weight: bold; padding: 6px 14px; }} "
                 f"QPushButton#LeftTabBtn:hover {{ {tab_hov} }} "
                 f"QPushButton#LeftTabBtn:checked {{ {tab_sel} }} "
