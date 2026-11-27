@@ -178,8 +178,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "cover_radius": 6,
     "logo_radius": 6,
     "screenshot_radius": 6,
-    "grid_zoom": 193,
-    "list_zoom": 207,
+    "grid_zoom": 255,
+    "list_zoom": 191,
     "lock_layout": True,
     "window": {
         "width": 1920,

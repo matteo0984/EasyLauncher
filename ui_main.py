@@ -3056,7 +3056,7 @@ class MainWindow(QMainWindow):
         is_list = (mode == "list")
         sel_id = self.current_game_id
         self.delegate.list_mode = is_list
-        zoom = int(self.config.get("list_zoom" if is_list else "grid_zoom", 160 if is_list else 260))
+        zoom = int(self.config.get("list_zoom" if is_list else "grid_zoom", 191 if is_list else 255))
         self.zoom_slider.blockSignals(True)
         self.zoom_slider.setValue(zoom)
         self.zoom_slider.blockSignals(False)
